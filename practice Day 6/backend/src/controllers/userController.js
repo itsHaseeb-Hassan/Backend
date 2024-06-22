@@ -66,3 +66,30 @@ export const createUser = async (req, res, next) => {
 };
 
 export default createUser;
+
+
+export const loginUser=async(req,res,next)=>{
+   const {email,password}=req.body;
+
+   if(!email || !password){
+    const error=createHttpError(400,"Please provide email and password");
+    return next(error);
+   }  
+
+   const existingUser=await User.findOne({email});
+
+   if(!existingUser){
+    const error=createHttpError(401,"Invalid credentials");
+    return next(error);
+   }
+
+   const isPasswordCorrect=await bcrypt.compare(password,existingUser.password);
+   if(!isPasswordCorrect){
+    const error=createHttpError(401,"Invalid credentials");
+    return next(error);
+   }
+
+   const token=jwt.sign({id:existingUser._id},process.env.JWT_SECRET,{expiresIn:"1h"});
+   res.status(200).json({accessToken:token});
+
+}
