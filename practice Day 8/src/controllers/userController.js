@@ -25,4 +25,5 @@ const createUser=async(req,res,next )=>{
         const err=createHttpError(500,'Intrnal server error')
         return next(res.json(err))
     }
+    
 }
