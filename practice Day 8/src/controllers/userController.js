@@ -53,7 +53,7 @@ export {createUser}
 
 // loginUser
 
-const loginUser=async(req,res,next)=>{
+export const loginUser=async(req,res,next)=>{
     const {email,password}=req.body;
 
     // validation
@@ -68,8 +68,9 @@ const loginUser=async(req,res,next)=>{
     }
 
     // check if user exists
+    let existingUser;
     try{
-        const existingUser=await User.findOne({email})
+         existingUser=await User.findOne({email})
         if(!existingUser){
             const error=createHttpError(404,"User not found")
             return next(res.json(error))
